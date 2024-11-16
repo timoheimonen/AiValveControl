@@ -59,14 +59,19 @@ class TemperatureControlEnv(gym.Env):
         self.previous_valve_adjust = current_valve_adjust  # Päivitä edellinen arvo
         
         # Palkinto logiikka
+        previous_error = error  # Tallennetaan edellinen virhe seuraavaa askelta varten
+
         if error <= 0.5:
             reward = 10.0 - valve_change_penalty  # Suurin palkinto, mutta penaloi isoja muutoksia
             done = True  # Episodi päättyy
         else:
-            reward = -0.1 * error - valve_change_penalty  # Lisää rangaistus nopeista muutoksista
+            # Laske pieni palkkio, jos virhe pienenee
+            error_delta = previous_error - error  # Positiivinen, jos ollaan lähempänä asetusta
+            movement_reward = np.clip(error_delta * 0.1, 0, 1.0)  # Skaalataan palkkio
+            reward = movement_reward - 0.1 * error - valve_change_penalty  # Lisää liikkumispalkkio
             reward = np.clip(reward, -10, 10)
             done = False  # Episodi jatkuu
-        
+                
         # Palauta tila, palkinto ja muut tiedot
         obs = np.array([self.current_temp, self.setpoint_temp], dtype=np.float32)
         return obs, reward, bool(done), False, {"valve_adjust": delayed_valve_adjust}
