@@ -1,3 +1,4 @@
+#train_ai_gfx
 import pygame
 import time
 from collections import deque
