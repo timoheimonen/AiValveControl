@@ -17,14 +17,14 @@ def main():
         "MlpPolicy", 
         env, 
         verbose=1, 
-        learning_rate=0.0003,  # Voit säätää oppimisnopeutta tarpeen mukaan
+        learning_rate=0.0001,  # Voit säätää oppimisnopeutta tarpeen mukaan
         gamma=0.99,             # Diskonttaustekijä
-        ent_coef=0.01,          # Entropia-kerroin kannustaa eksploraatioon
-        clip_range=0.2          # PPO:n klippausalue
+        ent_coef=0.001,          # Entropia-kerroin kannustaa eksploraatioon
+        clip_range=0.1         # PPO:n klippausalue
     )
     
     # Kouluta mallia
-    model.learn(total_timesteps=5000000)
+    model.learn(total_timesteps=2000000)
     
     # Tallenna malli
     model.save("ppo_temperature_control")

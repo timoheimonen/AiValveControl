@@ -20,7 +20,7 @@ class TemperatureControlEnv(gym.Env):
             dtype=np.float32
         )
         
-        self.noise_level = 1.5  # Kohinan taso
+        self.noise_level = 0.5  # Kohinan taso
         self.reset()
 
     def reset(self, seed=None, options=None):
@@ -59,7 +59,7 @@ class TemperatureControlEnv(gym.Env):
         self.previous_valve_adjust = current_valve_adjust  # Päivitä edellinen arvo
         
         # Palkinto logiikka
-        if error <= 1.0:
+        if error <= 0.5:
             reward = 10.0 - valve_change_penalty  # Suurin palkinto, mutta penaloi isoja muutoksia
             done = True  # Episodi päättyy
         else:

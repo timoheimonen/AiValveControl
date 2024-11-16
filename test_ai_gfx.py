@@ -128,14 +128,13 @@ def main():
                 # Tarkista, jatkuuko episodi
                 if terminated:
                     if active_after_target < 500:
-                        print("Episodi päättyisi, mutta kohinan hallintaa jatketaan.")
                         terminated = False  # Jatka episodia
                     else:
                         done = True  # Päätetään episodi lopullisesti
                 elif True:  # Ohitetaan lämpötilatarkistus
                     active_after_target += 1
                     print(f"active_after_target: {active_after_target}")  # DEBUG: Seuraa laskuria
-                    if active_after_target >= 50:  # Esimerkki: 500 sykliä (50 sekuntia, jos fps = 10)
+                    if active_after_target >= 100:  # Esimerkki: 500 sykliä (50 sekuntia, jos fps = 10)
                         print("Aika täyttyi, siirrytään seuraavaan episodiin.")
                         done = True  # Päätetään episodi
                 else:
@@ -144,7 +143,7 @@ def main():
                     active_after_target = 0
                 
                 # Odota hetki
-                time.sleep(0.2)
+                time.sleep(0.1)
             print(f"Episodi {episode} päättyi, kokonaisscore: {total_reward:.2f}")
             terminated = False
             episode += 1
