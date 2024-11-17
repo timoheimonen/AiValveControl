@@ -1,7 +1,24 @@
 # train_ai_data
-# Licensed under the MIT License.
-# Copyright (c) 2024 Timo Heimonen.
-# See the LICENSE file in the project root for more details.
+# MIT License
+# Copyright (c) 2024 Timo Heimonen
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
 
 import gymnasium as gym
 from gymnasium import spaces
@@ -61,20 +78,17 @@ class TemperatureControlEnv(gym.Env):
         # Add penalty for large valve adjustments
         valve_change_penalty = abs(current_valve_adjust - self.previous_valve_adjust) * 0.1
         self.previous_valve_adjust = current_valve_adjust  # Update the most recent adjustment
-        
+
         # Reward and penalty logic
-        if error <= 0.5:
-            reward = 10.0 #- valve_change_penalty  # Maximum reward, but penalize abrupt changes
+        if error <= 1.0:
+            reward = 10.0 - valve_change_penalty  # Maximum reward, but penalize abrupt changes
             done = True  # Episode ends when the target is achieved
-        elif error > 0.5 and error <= 2.0:
-            # Smaller penalty near the tolerance area
-            reward = -1.0 * error - valve_change_penalty
-            done = False
         else:
             # Larger penalty when moving further from the tolerance area
-            reward = -2.0 * error - valve_change_penalty
+            reward = -0.1 * (error ** 2) - valve_change_penalty
+            reward = np.clip(reward, -10, 10)
             done = False
-        
+       
         # Return state, reward, and additional information
         obs = np.array([self.current_temp, self.setpoint_temp], dtype=np.float32)
         return obs, reward, bool(done), False, {"valve_adjust": delayed_valve_adjust}
