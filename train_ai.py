@@ -39,7 +39,7 @@ def main():
         verbose=1,              # Display learning logs
         learning_rate=0.0003,   # Learning rate, adjustable as needed
         gamma=0.99,             # Discount factor for long-term decisions
-        ent_coef=0.001,         # Entropy coefficient, helps explore alternatives
+        ent_coef=0.01,         # Entropy coefficient, helps explore alternatives
         clip_range=0.1          # Clipping range for stable policy updates
     )
     
