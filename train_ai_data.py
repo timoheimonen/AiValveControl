@@ -26,7 +26,7 @@ class TemperatureControlEnv(gym.Env):
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
         self.current_temp = np.random.uniform(1, 80)  # Satunnainen aloituslämpötila
-        self.setpoint_temp = np.random.uniform(35, 75)  # Satunnainen asetuslämpötila
+        self.setpoint_temp = int(np.random.uniform(35, 75)) # Satunnainen asetuslämpötila
         self.previous_valve_adjust = 50.0  # Nollataan venttiilin säätötila
         self.valve_adjust_queue.clear()  # Tyhjennetään viivejono
         for _ in range(self.valve_adjust_queue.maxlen):
@@ -58,20 +58,19 @@ class TemperatureControlEnv(gym.Env):
         valve_change_penalty = abs(current_valve_adjust - self.previous_valve_adjust) * 0.1
         self.previous_valve_adjust = current_valve_adjust  # Päivitetään viimeisin säätötila
         
-        # Palkitsemislogiikka
-        previous_error = error  # Tallennetaan virhe seuraavaa askelta varten
-
+        # Palkitsemis- ja rangaistuslogiikka
         if error <= 0.5:
-            reward = 10.0 - valve_change_penalty  # Maksimipalkkio, mutta penalisoidaan äkkinäisiä muutoksia
+            reward = 10.0 #- valve_change_penalty  # Maksimipalkkio, mutta penalisoidaan äkkinäisiä muutoksia
             done = True  # Episodi päättyy, kun tavoite saavutetaan
+        elif error > 0.5 and error <= 2.0:
+            # Lievempi rangaistus toleranssialueen lähistöllä
+            reward = -1.0 * error - valve_change_penalty
+            done = False
         else:
-            # Palkitaan pienestä virheen pienenemisestä
-            error_delta = previous_error - error  # Positiivinen, jos mennään lähemmäs tavoitetta
-            movement_reward = np.clip(error_delta * 0.1, 0, 1.0)  # Skaalataan virhepalkkio
-            reward = movement_reward - 0.1 * error - valve_change_penalty  # Yhdistetään palkkio ja rangaistukset
-            reward = np.clip(reward, -10, 10)  # Pidä palkkio järkevällä alueella
-            done = False  # Episodi jatkuu
-                
+            # Suurempi rangaistus poistuessa kauemmaksi toleranssialueelta
+            reward = -2.0 * error - valve_change_penalty
+            done = False
+        
         # Palautetaan tila, palkkio ja lisätiedot
         obs = np.array([self.current_temp, self.setpoint_temp], dtype=np.float32)
         return obs, reward, bool(done), False, {"valve_adjust": delayed_valve_adjust}
