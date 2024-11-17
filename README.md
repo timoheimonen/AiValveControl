@@ -16,3 +16,5 @@ Adjust valve delay, temperatures, etc., in `train_ai_data.py`. These settings ar
 
 ## Environment
 Python version 3.8.20
+Open AI Gym
+Stable Baselines 3
