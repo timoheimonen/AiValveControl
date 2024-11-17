@@ -5,7 +5,7 @@ An intelligent valve control system utilizing the PPO model for temperature mana
 This project is licensed under the MIT License. For more details, see the [LICENSE](LICENSE) file.
 
 ## Usage
-`python ./train.ai.py` - Train the model. The model uses `train_ai_data.py`.
+`python ./train_ai.py` - Train the model. The model uses `train_ai_data.py`.
 
 `python ./test_ai_gfx.py` - Graphical simulation of the model's functionality using Pygame. The model uses `train_ai_data.py`.
 
