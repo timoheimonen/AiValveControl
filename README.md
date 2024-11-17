@@ -15,6 +15,9 @@ Adjust the model training parameters in the PPO section of `train_ai.py`.
 Adjust valve delay, temperatures, etc., in `train_ai_data.py`. These settings are used for both training and testing.
 
 ## Environment
+
+Miniconda environment
+
 Python version 3.8.20
 
 Open AI Gym
