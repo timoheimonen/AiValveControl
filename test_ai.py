@@ -1,43 +1,46 @@
 # test_ai.py
+# Licensed under the MIT License.
+# Copyright (c) 2024 Timo Heimonen.
+# See the LICENSE file in the project root for more details.
 
 import gymnasium as gym
 from stable_baselines3 import PPO
-from train_ai_data import TemperatureControlEnv  # Polku tiedostoon, joka sisältää ympäristön määrittelyn
+from train_ai_data import TemperatureControlEnv  # Path to the file that defines the environment
 
 def main():
-    # Ladataan koulutettu PPO-malli tiedostosta
+    # Load the trained PPO model from a file
     model = PPO.load("ppo_temperature_control")
     
-    # Alustetaan lämpötilan säätöympäristö
+    # Initialize the temperature control environment
     env = TemperatureControlEnv()
     
-    # Testataan mallia 10 eri episodilla
+    # Test the model in 10 different episodes
     for episode in range(10):
-        # Resetoi ympäristö ja hae aloitusarvot
+        # Reset the environment and fetch the initial values
         obs, _ = env.reset()
-        initial_temp, setpoint_temp = obs  # Alku- ja tavoitelämpötilat
+        initial_temp, setpoint_temp = obs  # Initial and target temperatures
         done = False
-        total_reward = 0  # Kerätään palkkioiden summa episodin aikana
+        total_reward = 0  # Accumulate rewards during the episode
         
-        print(f"Episodi {episode + 1} alkaa:")
-        print(f"Lähtölämpötila: {initial_temp:.2f} | Tavoitelämpötila: {setpoint_temp:.2f}")
+        print(f"Episode {episode + 1} begins:")
+        print(f"Starting temperature: {initial_temp:.2f} | Target temperature: {setpoint_temp:.2f}")
         
-        # Suorita episodi, kunnes se päättyy
+        # Run the episode until it ends
         while not done:
-            # Ennustetaan seuraava toiminto koulutetulla mallilla
+            # Predict the next action using the trained model
             action, _states = model.predict(obs, deterministic=True)
             
-            # Suoritetaan toiminto ympäristössä ja päivitetään tila
+            # Perform the action in the environment and update the state
             obs, reward, done, truncated, info = env.step(action)
             
-            # Visualisoidaan ympäristön tila
+            # Visualize the environment state
             env.render()
             
-            # Lisätään palkkio kokonaispisteisiin
+            # Add the reward to the total score
             total_reward += reward
         
-        # Tulosta episodin tulos
-        print(f"Episodi {episode + 1} päättyi, kokonaisscore: {total_reward:.2f}\n")
+        # Print the episode result
+        print(f"Episode {episode + 1} ended, total score: {total_reward:.2f}\n")
 
 if __name__ == "__main__":
     main()

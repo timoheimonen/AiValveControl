@@ -1,34 +1,37 @@
 # train_ai.py
+# Licensed under the MIT License.
+# Copyright (c) 2024 Timo Heimonen.
+# See the LICENSE file in the project root for more details.
 
 import gymnasium as gym
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_checker import check_env
-from train_ai_data import TemperatureControlEnv  # Polku tarkistettu, varmista tiedoston olemassaolo
+from train_ai_data import TemperatureControlEnv  # Path checked, ensure the file exists
 
 def main():
-    # Alustetaan ympäristö lämpötilan säätöä varten
+    # Initialize the environment for temperature control
     env = TemperatureControlEnv()
     
-    # Tarkistetaan, että ympäristö vastaa Gym-standardia
+    # Check that the environment complies with Gym standards
     check_env(env)
     
-    # Luodaan PPO-malli oppimiseen
+    # Create a PPO model for learning
     model = PPO(
-        "MlpPolicy",            # Käytetään perus monikerrosperceptronia politiikkaan
-        env,                    # Simuloitu ympäristö
-        verbose=1,              # Näytetään oppimisen lokit
-        learning_rate=0.0001,   # Oppimisnopeus, voi säätää tilanteen mukaan
-        gamma=0.99,             # Diskonttaustekijä pitkän aikavälin päätöksille
-        ent_coef=0.001,         # Entropiakerroin, auttaa tutkimaan vaihtoehtoja
-        clip_range=0.1          # Klippausalue politiikan päivitysten vakaudelle
+        "MlpPolicy",            # Use a basic multilayer perceptron for the policy
+        env,                    # Simulated environment
+        verbose=1,              # Display learning logs
+        learning_rate=0.0001,   # Learning rate, adjustable as needed
+        gamma=0.99,             # Discount factor for long-term decisions
+        ent_coef=0.001,         # Entropy coefficient, helps explore alternatives
+        clip_range=0.1          # Clipping range for stable policy updates
     )
     
-    # Koulutetaan PPO-mallia, asetettu suuri määrä askeleita oppimisen varmistamiseksi
+    # Train the PPO model with a high number of steps to ensure learning
     model.learn(total_timesteps=2000000)
     
-    # Tallennetaan koulutettu malli tiedostoon
+    # Save the trained model to a file
     model.save("ppo_temperature_control")
-    print("Malli tallennettu tiedostoon 'ppo_temperature_control.zip'.")
+    print("Model saved to 'ppo_temperature_control.zip'.")
 
 if __name__ == "__main__":
     main()

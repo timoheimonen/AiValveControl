@@ -1,18 +1,18 @@
 # AiValveControl
-Älykäs venttiilin säätöjärjestelmä, joka hyödyntää PPO-mallia lämpötilan hallintaan. Tämä projekti simuloi ympäristöä ja käyttää vahvistusoppimista optimaalisen suorituskyvyn saavuttamiseksi.
+An intelligent valve control system utilizing the PPO model for temperature management. This project simulates an environment and uses reinforcement learning to achieve optimal performance.
 
-## Lisenssi
-Tämä projekti on lisensoitu MIT-lisenssillä. Katso lisätiedot [LICENSE](LICENSE) tiedostosta.
+## License
+This project is licensed under the MIT License. For more details, see the [LICENSE](LICENSE) file.
 
-## Käyttö
-python ./train.ai.py - kouluta malli, malli hyödyntää train_ai_data.py
+## Usage
+`python ./train.ai.py` - Train the model. The model uses `train_ai_data.py`.
 
-python ./test_ai_gfx.py - graafinen pygame mallin toimivuudesta, malli hyödyntää train_ai_data.py
+`python ./test_ai_gfx.py` - Graphical simulation of the model's functionality using Pygame. The model uses `train_ai_data.py`.
 
-python ./test_ai.py - mallin testausta konsolissa.
+`python ./test_ai.py` - Console testing of the model.
 
-Säädä mallin koulutusparametrejä train_ai.py olevassa PPO-osiossa.
-Venttiilin viive, lämpötilat jne train_ai_data.py tiedostossa. Näitä käytetään koulutuksessa, sekä testauksessa.
+Adjust the model training parameters in the PPO section of `train_ai.py`.
+Adjust valve delay, temperatures, etc., in `train_ai_data.py`. These settings are used for both training and testing.
 
-## Ympäristö
-Python versio 3.8.20
+## Environment
+Python version 3.8.20
